@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    name: root
+    password: firoze28
+    url: jdbc:mysql://localost:3306/streambookdb
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    host: localhost
+    port: 1025
+    username: firoze
+    password: firoze28
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
