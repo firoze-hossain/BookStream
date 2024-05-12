@@ -4,10 +4,13 @@ import com.roze.dto.RegistrationRequest;
 import com.roze.entity.Role;
 import com.roze.entity.Token;
 import com.roze.entity.User;
+import com.roze.enums.EmailTemplateName;
 import com.roze.repository.RoleRepository;
 import com.roze.repository.TokenRepository;
 import com.roze.repository.UserRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +25,11 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final EmailService emailService;
+    @Value("${application.mailing.frontend.activation-url}")
+    private String activationUrl;
 
-    public void register(RegistrationRequest request) {
+    public void register(RegistrationRequest request) throws MessagingException {
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new IllegalStateException("Role user was not initialized"));
         User user = User.builder()
@@ -39,9 +45,14 @@ public class AuthenticationService {
         sendValidationEmail(user);
     }
 
-    private void sendValidationEmail(User user) {
-        String token = generateAndSaveActivationToken(user);
+    private void sendValidationEmail(User user) throws MessagingException {
+        String newToken = generateAndSaveActivationToken(user);
         //send email
+emailService.sendMail(user.getEmail(),user.fullName(),
+        EmailTemplateName.ACTIVATE_ACCOUNT,
+        activationUrl,
+        newToken,
+        "Account Activation");
     }
 
     private String generateAndSaveActivationToken(User user) {
