@@ -1,5 +1,7 @@
 package com.roze.controller;
 
+import com.roze.dto.AuthenticationRequest;
+import com.roze.dto.AuthenticationResponse;
 import com.roze.dto.RegistrationRequest;
 import com.roze.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,5 +25,10 @@ public class AuthenticationController {
         authenticationService.register(request);
         return ResponseEntity.accepted().build();
 
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
+        return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
     }
 }

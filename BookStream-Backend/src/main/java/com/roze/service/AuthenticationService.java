@@ -1,22 +1,28 @@
 package com.roze.service;
 
+import com.roze.dto.AuthenticationRequest;
+import com.roze.dto.AuthenticationResponse;
 import com.roze.dto.RegistrationRequest;
-import com.roze.entity.Role;
 import com.roze.entity.Token;
 import com.roze.entity.User;
 import com.roze.enums.EmailTemplateName;
 import com.roze.repository.RoleRepository;
 import com.roze.repository.TokenRepository;
 import com.roze.repository.UserRepository;
+import com.roze.security.JwtService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +32,8 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
 
@@ -80,5 +88,23 @@ public class AuthenticationService {
             codeBuilder.append(characters.charAt(randomIndex));
         }
         return codeBuilder.toString();
+    }
+
+    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
+        var auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authenticationRequest.getEmail(),
+                        authenticationRequest.getPassword()
+                )
+        );
+        Map claims = new HashMap<String, Object>();
+        User user = (User) auth.getPrincipal();
+        claims.put("fullName", user.fullName());
+        String token = jwtService.generateToken(claims, user);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .build();
+
     }
 }
