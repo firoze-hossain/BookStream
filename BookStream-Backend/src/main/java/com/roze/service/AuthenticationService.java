@@ -30,9 +30,10 @@ public class AuthenticationService {
     private String activationUrl;
 
     public void register(RegistrationRequest request) throws MessagingException {
-        Role userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new IllegalStateException("Role user was not initialized"));
-        User user = User.builder()
+        var userRole = roleRepository.findByName("USER")
+                // todo - better exception handling
+                .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
+        var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
@@ -46,13 +47,16 @@ public class AuthenticationService {
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
-        String newToken = generateAndSaveActivationToken(user);
-        //send email
-emailService.sendMail(user.getEmail(),user.fullName(),
-        EmailTemplateName.ACTIVATE_ACCOUNT,
-        activationUrl,
-        newToken,
-        "Account Activation");
+        var newToken = generateAndSaveActivationToken(user);
+
+        emailService.sendMail(
+                user.getEmail(),
+                user.fullName(),
+                EmailTemplateName.ACTIVATE_ACCOUNT,
+                activationUrl,
+                newToken,
+                "Account activation"
+        );
     }
 
     private String generateAndSaveActivationToken(User user) {
