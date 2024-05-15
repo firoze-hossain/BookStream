@@ -1,10 +1,12 @@
 package com.roze.entity;
 
+import com.roze.entity.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -17,26 +19,10 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@EntityListeners(AuditingEntityListener.class)
-public class Feedback {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@SuperBuilder
+public class Feedback extends BaseEntity {
     private Double note;
     private String comment;
 
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime lastModifiedDate;
-    @CreatedBy
-    @Column(nullable = false, updatable = false)
-    private Integer createdBy;
-    @LastModifiedBy
-    @Column(insertable = false)
-    private Integer lastModifiedBy;
 }
