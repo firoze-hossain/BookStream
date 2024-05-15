@@ -14,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,5 +30,17 @@ public class Book extends BaseEntity {
     private String bookCover;
     private boolean archived;
     private boolean shareable;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "book")
+    private List<Feedback> feedbacks;
+
+    @OneToMany(mappedBy = "book")
+    private List<BookTransactionHistory> histories;
+
+
 
 }
