@@ -11,4 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface BookTransactionHistoryRepository extends JpaRepository<BookTransactionHistory, Integer> {
     @Query("select history from BookTransactionHistory  history where history.user.id=:userId")
     Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable, Integer userId);
+
+    @Query("select history from BookTransactionHistory  history where history.book.user.id=:userId")
+    Page<BookTransactionHistory> findAllReturnedBooks(Pageable pageable, Integer userId);
 }
