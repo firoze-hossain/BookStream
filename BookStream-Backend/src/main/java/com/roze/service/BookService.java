@@ -7,6 +7,7 @@ import com.roze.dto.PageResponse;
 import com.roze.entity.Book;
 import com.roze.entity.BookTransactionHistory;
 import com.roze.entity.User;
+import com.roze.exception.OperationNotPermittedException;
 import com.roze.mapper.BookMapper;
 import com.roze.repository.BookRepository;
 import com.roze.repository.BookTransactionHistoryRepository;
@@ -21,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -107,5 +109,16 @@ public class BookService {
                 allBorrowedBooks.isLast()
         );
 
+    }
+
+    public Integer updateShareableStatus(Integer bookId, Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("No book found with this id: " + bookId));
+        User user = (User) connectedUser.getPrincipal();
+        if (!Objects.equals(book.getUser().getBooks(), user.getId())) {
+            throw new OperationNotPermittedException("You can not update book shareable status");
+        }
+        book.setShareable(!book.isShareable());
+        bookRepository.save(book);
+        return bookId;
     }
 }
