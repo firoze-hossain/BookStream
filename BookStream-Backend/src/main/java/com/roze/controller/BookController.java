@@ -5,12 +5,14 @@ import com.roze.dto.BookResponse;
 import com.roze.dto.BorrowedBookResponse;
 import com.roze.dto.PageResponse;
 import com.roze.service.BookService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("book")
@@ -94,5 +96,16 @@ public class BookController {
     public ResponseEntity<Integer> approveReturnBorrowBook(@PathVariable("bookId") Integer bookId,
                                                            Authentication connectedUser) {
         return ResponseEntity.ok(bookService.approveReturnBorrowBook(bookId, connectedUser));
+    }
+
+    @PostMapping(value = "/cover/{bookId}", consumes = "multipart/form-data")
+    public ResponseEntity<?> uploadBookCover(
+            @PathVariable("bookId") Integer bookId,
+            @Parameter()
+            @RequestPart("file") MultipartFile file,
+            Authentication connectedUser
+    ) {
+        bookService.uploadBookCover(file, connectedUser, bookId);
+        return ResponseEntity.accepted().build();
     }
 }
