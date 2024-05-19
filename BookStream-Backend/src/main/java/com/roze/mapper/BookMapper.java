@@ -5,6 +5,7 @@ import com.roze.dto.BookResponse;
 import com.roze.dto.BorrowedBookResponse;
 import com.roze.entity.Book;
 import com.roze.entity.BookTransactionHistory;
+import com.roze.utils.FileUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +32,7 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
                 .user(book.getUser().fullName())
+                .cover(FileUtils.readFileFromLocation(book.getBookCover()))
                 .build();
     }
 
