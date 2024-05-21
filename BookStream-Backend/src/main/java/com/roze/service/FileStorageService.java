@@ -1,6 +1,5 @@
 package com.roze.service;
 
-import com.roze.entity.Book;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 @Slf4j
 public class FileStorageService {
-    @Value("${file.upload.photos-output-path}")
+    @Value("${application.file.upload.photos-output-path}")
     private String fileUploadPath;
 
     public String saveFile(
