@@ -22,7 +22,7 @@ export class SignUpComponent {
       body: this.registerRequest
     }).subscribe({
       next: () => {
-        this.router.navigate(['activateAccount'])
+        this.router.navigate(['activate-account']);
       },
       error: (err) => {
         this.errorMessage = err.error.validationErrors;
