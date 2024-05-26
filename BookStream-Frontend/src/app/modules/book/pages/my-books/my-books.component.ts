@@ -9,7 +9,7 @@ import {BookResponse} from "../../../../services/models/book-response";
   templateUrl: './my-books.component.html',
   styleUrls: ['./my-books.component.scss']
 })
-export class MyBooksComponent implements OnInit{
+export class MyBooksComponent implements OnInit {
   bookResponse: PageResponseBookResponse = {};
   page = 0;
   size = 5;
@@ -72,6 +72,6 @@ export class MyBooksComponent implements OnInit{
   }
 
   editBook(book: BookResponse) {
-
+    this.router.navigate(['books', 'manage', book.id]);
   }
 }
